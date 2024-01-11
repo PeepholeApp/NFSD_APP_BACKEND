@@ -1,5 +1,6 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 
 const userController = {
@@ -12,6 +13,7 @@ const userController = {
       res.status(500).send("Not find any user");
     }
   },
+
   getUserById: async (req, res) => {
     try {
       const userId = req.params.id;
@@ -21,15 +23,23 @@ const userController = {
       res.status(404).send("User not find");
     }
   },
+
   addUser: async (req, res) => {
-    try {
-      const user = new User(req.body);
-      await user.save();
-      res.json(user);
-    } catch (error) {
-      res.status(404).send("User cannot be added");
-    }
+    const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    UserModel.create({
+      email: req.body.email,
+      password: encryptedPassword,
+    })
+      .then((userDoc) => res.status(200).send(userDoc))
+      .catch((error) => {
+        console.log(error.code);
+        switch (error.code) {
+          default:
+            res.status(400).send("User cannot be added", error);
+        }
+      });
   },
+
   deleteUser: async (req, res) => {
     try {
       const user = await User.findOneAndDelete(req.params.id);
@@ -38,6 +48,7 @@ const userController = {
       res.status(404).send("User cannot be deleted");
     }
   },
+
   updateUser: async (req, res) => {
     try {
       const user = await User.findOneAndUpdate(
@@ -51,17 +62,29 @@ const userController = {
       res.status(404).send("User cannot be update");
     }
   },
+
   checkUser: async (req, res) => {
     const { email, password } = req.body;
 
     const [userFound] = await UserModel.find({ email: email });
-    if (userFound) return res.status(404).json({ msg: "User not found" });
+    if (!userFound) return res.status(401).json({ msg: "User not found" });
 
     if (await bcrypt.compare(password, userFound.password)) {
-      return res.status(200).json({ msg: "User not found" });
+      const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: 60 });
+      return res.status(200).json({ msg: "Userlogged", token });
     }
-
     return res.status(404).json({ msg: "Password does not match" });
+  },
+
+  verifyToken: (req, res, next) => {
+    const token = req.headers.authorization;
+    if (!token) res.status(404).json({ msg: "Missing token!!!!" });
+    try {
+      jwt.verify(token, process.env.SECRET);
+      return next();
+    } catch (error) {
+      return res.status(404).json({ msg: "Token not valid or expired" });
+    }
   },
 };
 
