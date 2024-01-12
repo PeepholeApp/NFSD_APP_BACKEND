@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const userRouter = require("./routes/userRouter");
+const profileRouter = require("./routes/profileRouter");
 
 const port = 3001;
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/users", userRouter);
+app.use("/profiles", profileRouter);
 
 app.listen(port, () => {
   console.log("Runing server");
