@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
+require("dotenv").config();
 
 const userController = {
   getAllUsers: async (req, res) => {
@@ -26,7 +27,7 @@ const userController = {
 
   addUser: async (req, res) => {
     const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    UserModel.create({
+    User.create({
       email: req.body.email,
       password: encryptedPassword,
     })
@@ -66,11 +67,13 @@ const userController = {
   checkUser: async (req, res) => {
     const { email, password } = req.body;
 
-    const [userFound] = await UserModel.find({ email: email });
+    const [userFound] = await User.find({ email: email });
     if (!userFound) return res.status(401).json({ msg: "User not found" });
 
     if (await bcrypt.compare(password, userFound.password)) {
-      const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: 60 });
+      const token = jwt.sign({ email: userFound.email }, process.env.SECRET, {
+        expiresIn: 3600,
+      });
       return res.status(200).json({ msg: "Userlogged", token });
     }
     return res.status(404).json({ msg: "Password does not match" });
