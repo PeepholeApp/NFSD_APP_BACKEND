@@ -36,7 +36,7 @@ const userController = {
         console.log(error.code);
         switch (error.code) {
           default:
-            res.status(400).send("User cannot be added", error);
+            res.status(400).send("User cannot be added");
         }
       });
   },
