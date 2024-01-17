@@ -26,19 +26,22 @@ const userController = {
   },
 
   addUser: async (req, res) => {
-    const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    User.create({
-      email: req.body.email,
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({ msg: "Invalid email or password" });
+    }
+    const encryptedPassword = await bcrypt.hash(password, saltRounds);
+    const user = await User.create({
+      email: email,
       password: encryptedPassword,
-    })
-      .then((userDoc) => res.status(200).send(userDoc))
-      .catch((error) => {
-        console.log(error.code);
-        switch (error.code) {
-          default:
-            res.status(400).send("User cannot be added", error);
-        }
-      });
+    });
+    return res.status(201).json(user);
+  } catch (error){
+          console.error("Error creating user:", error);
+          res.status(400).send("Failed to create user");
+    }
   },
 
   deleteUser: async (req, res) => {
@@ -83,8 +86,13 @@ const userController = {
     const token = req.headers.authorization;
     if (!token) res.status(404).json({ msg: "Missing token!!!!" });
     try {
-      jwt.verify(token, process.env.SECRET);
-      return next();
+      jwt.verify(token, process.env.SECRET, function (err, decoded) {
+        if (err) {
+          return res.send("token is invalid")
+        } 
+        req.user=decoded;
+        return next()
+      })
     } catch (error) {
       return res.status(404).json({ msg: "Token not valid or expired" });
     }
