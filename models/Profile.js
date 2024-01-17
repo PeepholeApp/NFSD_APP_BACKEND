@@ -7,10 +7,10 @@ const profileSchema = new Schema({
   dob: { type: Date, require: false },
   nationality: { type: String, require: true },
   gender: { type: String, require: true },
-  lenguage: { type: [Array], require: true },
-  photo: { type: [Array], require: true },
-  bio: { type: String, require: true, maxlenght: 150 },
-  interest: { type: [Array], require: true },
+  languages: { type: Array, require: true },
+  // photo: { type: [Array], require: true },
+  // bio: { type: String, require: true, maxlenght: 150 },
+  // interest: { type: [Array], require: true },
 });
 
 const Profile = mongoose.model("profile", profileSchema);
