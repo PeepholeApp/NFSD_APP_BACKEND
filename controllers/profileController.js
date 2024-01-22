@@ -1,5 +1,5 @@
 const Profile = require("../models/Profile");
-const userController = require("./userController"); 
+const userController = require("./userController");
 
 const profileController = {
   getAllProfiles: async (req, res) => {
@@ -24,20 +24,13 @@ const profileController = {
 
   addProfile: async (req, res) => {
     try {
-      const userId = req.params.id;
-      // Valida si existe un perfil antes de añadirlo
-      const user = await userController.getUserById(userId);
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-
       const newProfile = await Profile.create({
-        userId,
+        ...req.body,
       });
 
       res.status(200).json(newProfile);
     } catch (error) {
-      console.log(error.code);
+      console.error(error);
       res.status(400).send("Profile cannot be added", error);
     }
   },
