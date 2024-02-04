@@ -3,7 +3,7 @@ const router = express.Router();
 const profileController = require("../controllers/profileController");
 
 router.get("/all", profileController.getAllProfiles);
-router.get("/:id", profileController.getProfileByUserId);
+router.get("/user/:id", profileController.getProfileByUserId);
 router.get("/", profileController.getPaginationProfiles);
 router.post("/", profileController.addProfile);
 router.put("/:id", profileController.updateProfile);
