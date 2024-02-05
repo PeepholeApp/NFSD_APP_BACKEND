@@ -56,6 +56,21 @@ const profileController = {
       res.status(404).send("Profile cannot be updated");
     }
   },
+
+  getPaginationProfiles: async (req, res) => {
+    const page = req.query.page;
+    const limit = 9;
+
+    try {
+      const profiles = await Profile.find()
+        .skip((page - 1) * limit)
+        .limit(limit);
+      res.json(profiles);
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).send("Unable to find profiles");
+    }
+  },
 };
 
 module.exports = profileController;

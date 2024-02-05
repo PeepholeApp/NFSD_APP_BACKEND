@@ -31,16 +31,16 @@ const userController = {
 
       if (!email || !password) {
         return res.status(400).json({ msg: "Invalid email or password" });
-    }
-    const encryptedPassword = await bcrypt.hash(password, saltRounds);
-    const user = await User.create({
-      email: email,
-      password: encryptedPassword,
-    });
-    return res.status(201).json(user);
-  } catch (error){
-          console.error("Error creating user:", error);
-          res.status(400).send("Failed to create user");
+      }
+      const encryptedPassword = await bcrypt.hash(password, saltRounds);
+      const user = await User.create({
+        email: email,
+        password: encryptedPassword,
+      });
+      return res.status(201).json(user);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(400).send("Failed to create user");
     }
   },
 
@@ -77,7 +77,9 @@ const userController = {
       const token = jwt.sign({ email: userFound.email }, process.env.SECRET, {
         expiresIn: 3600,
       });
-      return res.status(200).json({ msg: "Userlogged", token });
+      return res
+        .status(200)
+        .json({ msg: "Userlogged", token, userId: userFound._id });
     }
     return res.status(404).json({ msg: "Password does not match" });
   },
@@ -88,11 +90,11 @@ const userController = {
     try {
       jwt.verify(token, process.env.SECRET, function (err, decoded) {
         if (err) {
-          return res.send("token is invalid")
-        } 
-        req.user=decoded;
-        return next()
-      })
+          return res.send("token is invalid");
+        }
+        req.user = decoded;
+        return next();
+      });
     } catch (error) {
       return res.status(404).json({ msg: "Token not valid or expired" });
     }
