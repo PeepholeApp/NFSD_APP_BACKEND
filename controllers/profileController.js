@@ -15,7 +15,7 @@ const profileController = {
   getProfileByUserId: async (req, res) => {
     try {
       const userId = req.params.id;
-      const profile = await Profile.findOne({ userId });
+      const profile = await Profile.findOne({ _id: userId });
       return res.json(profile);
     } catch (error) {
       res.status(404).send("Profile not found");
@@ -60,9 +60,11 @@ const profileController = {
   getPaginationProfiles: async (req, res) => {
     const page = req.query.page;
     const limit = 9;
+    const filters = req.query.filters || {};
 
+    console.log("Items: ", filters);
     try {
-      const profiles = await Profile.find()
+      const profiles = await Profile.find(filters)
         .skip((page - 1) * limit)
         .limit(limit);
       res.json(profiles);
