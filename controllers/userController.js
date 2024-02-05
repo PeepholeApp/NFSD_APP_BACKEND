@@ -97,6 +97,22 @@ const userController = {
       return res.status(404).json({ msg: "Token not valid or expired" });
     }
   },
+
+checkEmailDuplicate: async (req, res) => {
+  try {
+    const { email } = req.query;
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(200).json({ isDuplicate: true });
+    }
+
+    return res.status(200).json({ isDuplicate: false });
+  } catch (error) {
+    console.error("Error checking email duplicate:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+},
 };
 
 module.exports = userController;
