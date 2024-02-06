@@ -69,14 +69,22 @@ const profileController = {
         if (filters.nationality) query.nationality = filters.nationality;
         if (filters.gender) query.gender = filters.gender;
         if (filters.languages) query.languages = { $in: filters.languages };
-        if (filters.age && filters.age[0].min && filters.age[0].max) {
+        if (filters.age && filters.age.min && filters.age.max) {
           const currentDate = new Date();
-          const minBirthYear = currentDate.getFullYear() - filters.age[0].max;
-          const maxBirthYear = currentDate.getFullYear() - filters.age[0].min;
+          const minBirthdate = new Date(
+            currentDate.getFullYear() - filters.age.max,
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
+          const maxBirthdate = new Date(
+            currentDate.getFullYear() - filters.age.min,
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
 
-          query.birthdate = {
-            $gte: `${minBirthYear}-01-01T00:00:00.000+00:00`,
-            $lte: `${maxBirthYear}-12-31T23:59:59.999+00:00`,
+          query.dob = {
+            $gte: minBirthdate,
+            $lte: maxBirthdate,
           };
         }
       }
