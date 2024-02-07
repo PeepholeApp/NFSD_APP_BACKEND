@@ -62,7 +62,6 @@ const profileController = {
     const limit = 9;
     const filters = req.query.filters || {};
 
-    console.log("Filters: ", filters);
     try {
       let query = {};
       if (Object.keys(filters).length > 0) {
