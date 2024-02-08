@@ -62,9 +62,33 @@ const profileController = {
     const limit = 9;
     const filters = req.query.filters || {};
 
-    console.log("Items: ", filters);
     try {
-      const profiles = await Profile.find(filters)
+      let query = {};
+      if (Object.keys(filters).length > 0) {
+        if (filters.nationality) query.nationality = filters.nationality;
+        if (filters.gender) query.gender = filters.gender;
+        if (filters.languages) query.languages = { $in: filters.languages };
+        if (filters.age && filters.age.min && filters.age.max) {
+          const currentDate = new Date();
+          const minBirthdate = new Date(
+            currentDate.getFullYear() - filters.age.max,
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
+          const maxBirthdate = new Date(
+            currentDate.getFullYear() - filters.age.min,
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
+
+          query.dob = {
+            $gte: minBirthdate,
+            $lte: maxBirthdate,
+          };
+        }
+      }
+      console.log("Query: ", query);
+      const profiles = await Profile.find(query)
         .skip((page - 1) * limit)
         .limit(limit);
       res.json(profiles);
