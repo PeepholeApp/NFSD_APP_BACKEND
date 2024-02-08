@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
@@ -77,9 +78,15 @@ const userController = {
       const token = jwt.sign({ email: userFound.email }, process.env.SECRET, {
         expiresIn: 3600,
       });
-      return res
-        .status(200)
-        .json({ msg: "Userlogged", token, userId: userFound._id });
+      //Busca el profile para el user
+      const profile = await Profile.findOne({ user: userFound._id });
+
+      return res.status(200).json({
+        msg: "Userlogged",
+        token,
+        userId: userFound._id,
+        profileId: profile?._id,
+      });
     }
     return res.status(404).json({ msg: "Password does not match" });
   },
@@ -100,21 +107,21 @@ const userController = {
     }
   },
 
-checkEmailDuplicate: async (req, res) => {
-  try {
-    const { email } = req.query;
-    const existingUser = await User.findOne({ email });
+  checkEmailDuplicate: async (req, res) => {
+    try {
+      const { email } = req.query;
+      const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-      return res.status(200).json({ isDuplicate: true });
+      if (existingUser) {
+        return res.status(200).json({ isDuplicate: true });
+      }
+
+      return res.status(200).json({ isDuplicate: false });
+    } catch (error) {
+      console.error("Error checking email duplicate:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    return res.status(200).json({ isDuplicate: false });
-  } catch (error) {
-    console.error("Error checking email duplicate:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-},
+  },
 };
 
 module.exports = userController;

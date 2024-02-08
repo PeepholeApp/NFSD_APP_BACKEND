@@ -47,7 +47,7 @@ const profileController = {
   updateProfile: async (req, res) => {
     try {
       const profile = await Profile.findOneAndUpdate(
-        { userId: req.params.id },
+        { _id: req.params.id },
         req.body,
         { new: true }
       );
