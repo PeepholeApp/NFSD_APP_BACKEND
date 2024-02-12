@@ -9,7 +9,7 @@ const profileSchema = new Schema({
   nationality: { type: String, require: true },
   gender: { type: String, require: true },
   languages: { type: Array, require: true },
-  photo: { type: [Array], require: true },
+  photo: { type: Array, require: true },
   bio: { type: String, require: true, maxlenght: 150 },
   interest: { type: [Array], require: true },
 });
