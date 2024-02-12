@@ -7,10 +7,11 @@ const activitySchema = new Schema({
   description: { type: String, require: true },
   date: { type: Date, require: true },
   available: { type: Boolean, require: true, default: true },
+  availability: { type: Number, require: true },
+  capacity: { type: Number, default: 0 },
   participants: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.ObjectId,
     ref: "profile",
-    require: true,
   },
 });
 
