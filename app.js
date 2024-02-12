@@ -5,6 +5,7 @@ const cors = require("cors");
 const userRouter = require("./routes/userRouter");
 const profileRouter = require("./routes/profileRouter");
 const activityRouter = require("./routes/activityRouter");
+const photoRouter = require("./routes/photoRouter");
 
 const port = 3001;
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use("/users", userRouter);
 app.use("/profiles", profileRouter);
 app.use("/activities", activityRouter);
+app.use("/image", photoRouter);
 
 app.listen(port, () => {
   console.log("Runing server");
