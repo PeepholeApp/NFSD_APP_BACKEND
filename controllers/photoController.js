@@ -2,11 +2,19 @@ const cloudinary = require("../utils/cloudinary");
 
 const photoController = {
   addPhoto: async (req, res) => {
+    console.log("jhjhjhjh", req.files);
     try {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "find-your-people",
-      });
-      res.json({ imageUrl: result.url });
+      let urls = [];
+
+      for (let file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          public_id: `${Date.now()}`,
+          resource_type: "auto",
+          folder: "find-your-people",
+        });
+        urls.push(result.url);
+      }
+      res.json(urls);
     } catch (error) {
       console.log("error", error);
       if (!req.file) {
