@@ -87,7 +87,7 @@ const profileController = {
           };
         }
       }
-      console.log("Query: ", query);
+
       const profiles = await Profile.find(query)
         .skip((page - 1) * limit)
         .limit(limit);
