@@ -9,10 +9,7 @@ const activitySchema = new Schema({
   available: { type: Boolean, require: true, default: true },
   availability: { type: Number, require: true },
   capacity: { type: Number, default: 0 },
-  participants: {
-    type: mongoose.Schema.ObjectId,
-    ref: "profile",
-  },
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
 });
 
 const Activity = mongoose.model("activity", activitySchema);
