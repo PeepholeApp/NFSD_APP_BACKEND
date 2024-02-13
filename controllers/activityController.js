@@ -3,7 +3,7 @@ const Activity = require("../models/Activity");
 const activityController = {
   getAllActivities: async (req, res) => {
     try {
-      const activity = await Activity.find();
+      const activity = await Activity.find().populate("participants", "name");
       res.json(activity);
     } catch (error) {
       console.log("error", error);
@@ -40,40 +40,6 @@ const activityController = {
       res.json(activityToUpdate);
     } catch (error) {
       res.status(404).send("Activity cannot be updated");
-    }
-  },
-  increaseCapacity: async (req, res) => {
-    try {
-      const activityToUpdate = await Activity.findOne({ _id: req.params.id });
-      if (activityToUpdate.capacity < activityToUpdate.availability) {
-        const updatedCounter = await Activity.findOneAndUpdate(
-          { _id: req.params.id },
-          { $inc: { capacity: 1 } },
-          { new: true }
-        );
-        res.json({ capacity: updatedCounter.capacity });
-      } else {
-        res.json({ capacity: activityToUpdate.capacity });
-      }
-    } catch (error) {
-      res.status(404).send("Capacity cannot be updated");
-    }
-  },
-  decreaseCapacity: async (req, res) => {
-    try {
-      const activityToUpdate = await Activity.findOne({ _id: req.params.id });
-      if (activityToUpdate.capacity > 0) {
-        const updatedCounter = await Activity.findOneAndUpdate(
-          { _id: req.params.id },
-          { $inc: { capacity: -1 } },
-          { new: true }
-        );
-        res.json({ capacity: updatedCounter.capacity });
-      } else {
-        res.json({ capacity: activityToUpdate.capacity });
-      }
-    } catch (error) {
-      res.status(404).send("Capacity cannot be updated");
     }
   },
 };

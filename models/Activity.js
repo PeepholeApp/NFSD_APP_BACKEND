@@ -6,10 +6,8 @@ const activitySchema = new Schema({
   category: { type: String, require: true },
   description: { type: String, require: true },
   date: { type: Date, require: true },
-  available: { type: Boolean, require: true, default: true },
-  availability: { type: Number, require: true },
-  capacity: { type: Number, default: 0 },
-  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  capacity: { type: Number, require: true },
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "profile" }],
 });
 
 const Activity = mongoose.model("activity", activitySchema);
