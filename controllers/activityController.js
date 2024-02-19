@@ -10,6 +10,14 @@ const activityController = {
       res.status(500).send("Unable to find activities");
     }
   },
+  getActivityById: async (req, res) => {
+    try {
+      const activity = await Activity.findOne({ _id: req.params.id });
+      return res.json(activity);
+    } catch (error) {
+      res.status(404).send("Activity not find");
+    }
+  },
   addActivity: async (req, res) => {
     try {
       const newActivity = await Activity.create({
