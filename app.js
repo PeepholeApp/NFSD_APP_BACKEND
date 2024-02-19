@@ -6,7 +6,7 @@ const userRouter = require("./routes/userRouter");
 const profileRouter = require("./routes/profileRouter");
 const activityRouter = require("./routes/activityRouter");
 const photoRouter = require("./routes/photoRouter");
-
+const chatRouter = require("./routes/chatRouter");
 const port = 3001;
 
 const user = "Dieguein";
@@ -23,6 +23,7 @@ app.use("/users", userRouter);
 app.use("/profiles", profileRouter);
 app.use("/activities", activityRouter);
 app.use("/image", photoRouter);
+app.use("/chat", chatRouter);
 
 app.listen(port, () => {
   console.log("Runing server");
