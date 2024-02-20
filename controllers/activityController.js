@@ -50,6 +50,22 @@ const activityController = {
       res.status(404).send("Activity cannot be updated");
     }
   },
+  removeParticipantFromActivity: async (req, res) => {
+    const { activityId, userId } = req.params;
+    try {
+      const updatedActivity = await Activity.findOneAndUpdate(
+        { _id: activityId },
+        { $pull: { participants: userId } },
+        { new: true }
+      );
+      if (!updatedActivity) {
+        return res.status(404).json({ error: "Activity cannot be find" });
+      }
+      return res.json({ message: "Participant deleted" });
+    } catch (error) {
+      return res.status(500).json({ error: "Error server" });
+    }
+  },
 };
 
 module.exports = activityController;
