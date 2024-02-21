@@ -15,6 +15,11 @@ const UserSchema = new Schema(
       type: String,
       require: true,
     },
+    role: {
+      type: String,
+      enum: ['admin', 'premium', 'user'],
+      default: ['user'],
+    }
   },
   { timeseries: true }
 );
