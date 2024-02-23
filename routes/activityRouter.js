@@ -5,9 +5,12 @@ const router = express.Router();
 
 router.get("/", activityController.getAllActivities);
 router.get("/:id", activityController.getActivityById);
-router.post("/", checkAdminOrPremium, activityController.addActivity);
-router.delete("/:id", checkAdminOrPremium, activityController.deleteActivity);
-router.put("/:id", checkAdminOrPremium, activityController.updateActivity);
-router.delete("/:activityId/participants/:userId", checkAdminOrPremium, activityController.removeParticipantFromActivity);
+router.post("/", activityController.addActivity);
+router.delete("/:id", activityController.deleteActivity);
+router.put("/:id", activityController.updateActivity);
+router.delete(
+  "/:activityId/participants/:userId",
+  activityController.removeParticipantFromActivity
+);
 
 module.exports = router;
