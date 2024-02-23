@@ -17,9 +17,12 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'premium', 'user'],
-      default: ['user'],
-    }
+      enum: ["admin", "premium", "user"],
+      default: ["user"],
+    },
+    pushToken: {
+      type: String,
+    },
   },
   { timeseries: true }
 );
