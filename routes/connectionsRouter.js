@@ -5,5 +5,6 @@ const { verifyToken } = require("../controllers/userController");
 
 router.post("/:profileId", verifyToken, connectionsController.addConection);
 router.get("/:profileId", verifyToken, connectionsController.getConnection);
+router.get("/", verifyToken, connectionsController.getConnections);
 
 module.exports = router;
