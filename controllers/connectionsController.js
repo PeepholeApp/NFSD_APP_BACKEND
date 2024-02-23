@@ -50,5 +50,21 @@ const Connections = {
       res.status(404).send("Connection not found");
     }
   },
+
+  getConnections: async (req, res) => {
+    const currentUser = await User.findOne({ email: req.user.email }); //convierto el email en user para traer el idUser
+    //busco todos los request que recibio
+    const connectionRequests = await ConnectionRequest.find({
+      receiver: currentUser._id,
+      status: "pending",
+    });
+    //conv en user_id
+    const userIds = connectionRequests.map(
+      (connectionRequest) => connectionRequest.sender
+    ); //traigo el id del sender-arreglo
+    const profiles = await Profile.find({ user: { $in: userIds } }); //trae perfil para los Id
+
+    res.status(200).json(profiles);
+  },
 };
 module.exports = Connections;
