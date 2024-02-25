@@ -3,8 +3,9 @@ const activityController = require("../controllers/activityController");
 const { checkAdminOrPremium } = require("../middleware/roles");
 const router = express.Router();
 
-router.get("/", activityController.getAllActivities);
+router.get("/all", activityController.getAllActivities);
 router.get("/:id", activityController.getActivityById);
+router.get("/", activityController.getPaginationActivities);
 router.post("/", activityController.addActivity);
 router.delete("/:id", activityController.deleteActivity);
 router.put("/:id", activityController.updateActivity);

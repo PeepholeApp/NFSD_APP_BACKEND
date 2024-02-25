@@ -9,9 +9,6 @@ const photoRouter = require("./routes/photoRouter");
 const chatRouter = require("./routes/chatRouter");
 const connectionsRouter = require("./routes/connectionsRouter");
 
-
-const port = 3001;
-
 const user = "Dieguein";
 const password = "BhKqobNPA4tvsAvr";
 const nameCollection = "FindYourPeople";
@@ -30,7 +27,6 @@ app.use("/image", photoRouter);
 app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
 
-
-app.listen(port, () => {
+app.listen(process.env.PORT, () => {
   console.log("Runing server");
 });
