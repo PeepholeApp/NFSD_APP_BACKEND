@@ -70,26 +70,45 @@ const userController = {
 
   checkUser: async (req, res) => {
     const { email, password } = req.body;
-
-    const [userFound] = await User.find({ email: email });
-    if (!userFound) return res.status(401).json({ msg: "User not found" });
-
-    if (await bcrypt.compare(password, userFound.password)) {
-      const token = jwt.sign({ email: userFound.email }, process.env.SECRET, {
-        expiresIn: 3600,
-      });
-      //Busca el profile para el user
-      const profile = await Profile.findOne({ user: userFound._id });
-
-      return res.status(200).json({
-        msg: "Userlogged",
-        token,
-        userId: userFound._id,
-        profileId: profile?._id,
-      });
+  
+    try {
+      const userFound = await User.findOne({ email });
+  
+      if (!userFound) {
+        return res.status(401).json({ msg: "User not found" });
+      }
+  
+      if (await bcrypt.compare(password, userFound.password)) {
+        const tokenPayload = {
+          email: userFound.email,
+          roles: userFound.role ? [userFound.role] : ['user'],
+        };
+  
+        const token = jwt.sign(
+          tokenPayload,
+          process.env.SECRET,
+          { expiresIn: 3600 }
+        );
+  
+        // Busca el profile para el user
+        const profile = await Profile.findOne({ user: userFound._id });
+  
+        return res.status(200).json({
+          msg: "User logged",
+          token,
+          userId: userFound._id,
+          profileId: profile?._id,
+          roles: tokenPayload.roles,
+        });
+      }
+  
+      return res.status(404).json({ msg: "Password does not match" });
+    } catch (error) {
+      console.error("Error checking user:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-    return res.status(404).json({ msg: "Password does not match" });
   },
+  
 
   verifyToken: (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];

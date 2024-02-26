@@ -32,5 +32,5 @@ app.use("/connections", connectionsRouter);
 
 
 app.listen(port, () => {
-  console.log("Runing server");
+  console.log("Running server");
 });
