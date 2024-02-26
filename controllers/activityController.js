@@ -59,7 +59,7 @@ const activityController = {
       if (Object.keys(filters).length > 0) {
         if (filters.category) query.category = filters.category;
       }
-      const profiles = await Profile.find(query).populate(
+      const profiles = await Activity.find(query).populate(
         "participants",
         "name"
       );
