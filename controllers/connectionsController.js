@@ -66,5 +66,34 @@ const Connections = {
 
     res.status(200).json(profiles);
   },
+  //
+  updateConnection: async (req, res) => {
+    const profileId = req.params.profileId;
+    const receiver = req.user; //usuario que esta logueado
+
+    const receiverUser = await User.findOne({ email: receiver.email });
+
+    const senderProfile = await Profile.findOne({ _id: profileId });
+    const senderUser = await User.findOne({ _id: senderProfile.user });
+
+    const connection = await ConnectionRequest.findOneAndUpdate(
+      {
+        sender: senderUser._id,
+        receiver: receiverUser._id,
+        status: "pending",
+      },
+      {
+        status: req.body.status,
+      }
+    );
+
+    console.log("connection", connection);
+
+    if (connection) {
+      res.status(201).json({ ...connection, status: req.body.status });
+    } else {
+      res.status(404).send("Connection not found");
+    }
+  },
 };
 module.exports = Connections;
