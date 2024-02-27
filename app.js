@@ -39,6 +39,6 @@ app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
 app.use("/reset-password", resetPasswordRouter);
 
-app.listen(port, () => {
+app.listen(process.env.PORT || `0.0.0.0:$PORT`, () => {
   console.log("Running server");
 });
