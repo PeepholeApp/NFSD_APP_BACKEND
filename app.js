@@ -10,12 +10,6 @@ const chatRouter = require("./routes/chatRouter");
 const connectionsRouter = require("./routes/connectionsRouter");
 const resetPasswordRouter = require("./routes/ResetPasswordRouter");
 
-
-
-const user = "Dieguein";
-const password = "BhKqobNPA4tvsAvr";
-const nameCollection = "FindYourPeople";
-
 const dotenv = require("dotenv").config();
 
 const port = 3001;
@@ -54,6 +48,6 @@ app.listen(port, () => {
 });
 
 
-  console.log("Runing server");
+  console.log("Running server");
 });
 
