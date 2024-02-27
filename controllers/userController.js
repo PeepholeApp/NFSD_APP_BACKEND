@@ -3,7 +3,6 @@ const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
-require("dotenv").config();
 
 const userController = {
   getAllUsers: async (req, res) => {
@@ -76,7 +75,7 @@ const userController = {
 
     if (await bcrypt.compare(password, userFound.password)) {
       const token = jwt.sign({ email: userFound.email }, process.env.SECRET, {
-        expiresIn: 3600,
+        expiresIn: 86400, // un dia
       });
       //Busca el profile para el user
       const profile = await Profile.findOne({ user: userFound._id });
