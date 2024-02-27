@@ -3,7 +3,6 @@ const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
-require("dotenv").config();
 
 const userController = {
   getAllUsers: async (req, res) => {
