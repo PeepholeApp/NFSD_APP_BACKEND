@@ -27,6 +27,6 @@ app.use("/image", photoRouter);
 app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
 
-app.listen(process.env.PORT, () => {
+app.listen(3001, () => {
   console.log("Runing server");
 });
