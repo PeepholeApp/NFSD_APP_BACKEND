@@ -50,6 +50,28 @@ const activityController = {
       res.status(404).send("Activity cannot be updated");
     }
   },
+  getPaginationActivities: async (req, res) => {
+    const page = req.query.page;
+    const limit = 9;
+    const categoryfilter = req.query || {};
+    console.log(categoryfilter);
+    try {
+      let query = {};
+      if (Object.keys(categoryfilter).length > 0) {
+        query.category = categoryfilter.category;
+      }
+      console.log(query);
+      const activities = await Activity.find(query).populate(
+        "participants",
+        "name"
+      );
+      // .skip((page - 1) * limit)
+      // .limit(limit);
+      res.json(activities);
+    } catch (error) {
+      res.status(404).send("Activity cannot be find");
+    }
+  },
   removeParticipantFromActivity: async (req, res) => {
     const { activityId, userId } = req.params;
     try {
