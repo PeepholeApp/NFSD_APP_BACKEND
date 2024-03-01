@@ -3,8 +3,9 @@ const userController = require("./userController");
 
 const profileController = {
   getAllProfiles: async (req, res) => {
+    const profileId = req.query.profileId;
     try {
-      const profiles = await Profile.find();
+      const profiles = await Profile.find({ _id: { $ne: profileId } });
       return res.json(profiles);
     } catch (error) {
       console.log("error", error);
@@ -61,9 +62,11 @@ const profileController = {
     const page = req.query.page;
     const limit = 9;
     const filters = req.query.filters || {};
+    const profileId = req.query.profileId;
 
     try {
       let query = {};
+      if (profileId) query._id = { $ne: profileId };
       if (Object.keys(filters).length > 0) {
         if (filters.nationality) query.nationality = filters.nationality;
         if (filters.gender) query.gender = filters.gender;
