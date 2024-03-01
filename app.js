@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -9,8 +11,6 @@ const photoRouter = require("./routes/photoRouter");
 const chatRouter = require("./routes/chatRouter");
 const connectionsRouter = require("./routes/connectionsRouter");
 const resetPasswordRouter = require("./routes/ResetPasswordRouter");
-
-const dotenv = require("dotenv").config();
 
 const port = 3001;
 

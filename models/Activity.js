@@ -8,6 +8,9 @@ const activitySchema = new Schema({
   date: { type: Date, require: true },
   capacity: { type: Number, require: true },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "profile" }],
+  address: { type: String, required: true },
+  latitude: { type: Number, require: true },
+  longitude: { type: Number, require: true },
 });
 
 const Activity = mongoose.model("activity", activitySchema);
