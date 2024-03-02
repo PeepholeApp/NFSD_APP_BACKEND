@@ -51,22 +51,17 @@ const activityController = {
     }
   },
   getPaginationActivities: async (req, res) => {
-    const page = req.query.page;
-    const limit = 9;
-    const categoryfilter = req.query || {};
-    console.log(categoryfilter);
+    const categoryfilter = req.query.filters || {};
     try {
       let query = {};
       if (Object.keys(categoryfilter).length > 0) {
-        query.category = categoryfilter.category;
+        query.category = categoryfilter;
       }
       console.log(query);
       const activities = await Activity.find(query).populate(
         "participants",
         "name"
       );
-      // .skip((page - 1) * limit)
-      // .limit(limit);
       res.json(activities);
     } catch (error) {
       res.status(404).send("Activity cannot be find");
