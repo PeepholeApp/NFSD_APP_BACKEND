@@ -92,11 +92,11 @@ const userController = {
 
   verifyToken: (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
-    if (!token) res.status(404).json({ msg: "Missing token!!!!" });
+    if (!token) res.status(400).json({ msg: "Missing token!!!!" });
     try {
       jwt.verify(token, process.env.SECRET, function (err, decoded) {
         if (err) {
-          return res.send("token is invalid");
+          return res.status(401).send("token is invalid");
         }
         req.user = decoded;
         return next();
