@@ -91,9 +91,6 @@ const profileController = {
         }
       }
 
-      console.log("query: ", query);
-      console.log("pagina: ", page);
-
       const profiles = await Profile.find(query)
         .skip((page - 1) * limit)
         .limit(limit);
