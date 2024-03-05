@@ -11,6 +11,7 @@ const photoRouter = require("./routes/photoRouter");
 const chatRouter = require("./routes/chatRouter");
 const connectionsRouter = require("./routes/connectionsRouter");
 const resetPasswordRouter = require("./routes/ResetPasswordRouter");
+const contactRouter = require("./routes/contactRouter");
 
 const port = 3001;
 
@@ -38,6 +39,7 @@ app.use("/image", photoRouter);
 app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
 app.use("/reset-password", resetPasswordRouter);
+app.use("/contact", contactRouter);
 
 app.listen(process.env.PORT || `0.0.0.0:$PORT`, () => {
   console.log("Running server");
