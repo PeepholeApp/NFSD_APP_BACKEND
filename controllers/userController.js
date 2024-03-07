@@ -24,6 +24,19 @@ const userController = {
     }
   },
 
+  getUserByEmail: async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const user = await User.findOne({ email: userEmail }).populate(
+        "_id",
+        "name"
+      );
+      return res.json(user);
+    } catch (error) {
+      res.status(404).send("User not find");
+    }
+  },
+
   addUser: async (req, res) => {
     try {
       const { email, password } = req.body;
