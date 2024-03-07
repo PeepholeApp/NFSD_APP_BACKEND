@@ -3,6 +3,14 @@ const Profile = require("../models/Profile");
 const { transporter } = require("../utils/nodemailer");
 const ConnectionRequest = require("../models/ConnectionRequest");
 const { json } = require("express");
+const { getMessaging } = require("firebase-admin/messaging");
+
+const admin = require("firebase-admin");
+const serviceAccount = require("../service-account-key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const Connections = {
   addConection: async (req, res) => {
@@ -13,6 +21,31 @@ const Connections = {
 
     const recipientProfile = await Profile.findOne({ _id: profileId });
     const recipientUser = await User.findOne({ _id: recipientProfile.user });
+    // console.log("push.token", recipientUser.pushToken);
+
+    const subject = `Hi! ${senderProfile.name} wants to contact you`;
+
+    const message = {
+      notification: {
+        title: "Peephole",
+        body: subject,
+      },
+      webpush: {
+        fcmOptions: {
+          link: "https://nfsd-app-frontend.onrender.com/home",
+        },
+      },
+      token: recipientUser.pushToken,
+    };
+    getMessaging()
+      .send(message)
+      .then((response) => {
+        // Response is a message ID string.
+        console.log("Successfully sent message:", response);
+      })
+      .catch((error) => {
+        console.log("Error sending message:", error);
+      });
 
     const newConnection = await ConnectionRequest.create({
       sender: senderUser._id,
@@ -22,7 +55,7 @@ const Connections = {
     await transporter.sendMail({
       from: sender.email,
       to: recipientUser.email,
-      subject: `Hi! ${senderProfile.name} wants to contact you`,
+      subject,
       html: "Hello",
     });
 
