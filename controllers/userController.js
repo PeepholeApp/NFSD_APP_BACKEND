@@ -10,7 +10,6 @@ const userController = {
       const user = await User.find();
       return res.json(user);
     } catch (error) {
-      console.log("error", error);
       res.status(500).send("Not find any user");
     }
   },

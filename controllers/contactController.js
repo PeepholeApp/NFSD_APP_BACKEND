@@ -4,8 +4,6 @@ const Contact = {
   sendEmail: async (req, res) => {
     const { fullName, email, message } = req.body;
 
-    console.log("body", req.body);
-
     await transporter.sendMail({
       from: email,
       to: process.env.EMAIL_USER,

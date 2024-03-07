@@ -6,7 +6,6 @@ const activityController = {
       const activity = await Activity.find().populate("participants", "name");
       res.json(activity);
     } catch (error) {
-      console.log("error", error);
       res.status(500).send("Unable to find activities");
     }
   },
@@ -25,7 +24,6 @@ const activityController = {
       });
       res.status(200).json(newActivity);
     } catch (error) {
-      console.log("error", error);
       res.status(400).send("Unable to add activity");
     }
   },
@@ -57,7 +55,6 @@ const activityController = {
       if (Object.keys(categoryfilter).length > 0) {
         query.category = categoryfilter;
       }
-      console.log(query);
       const activities = await Activity.find(query).populate(
         "participants",
         "name"

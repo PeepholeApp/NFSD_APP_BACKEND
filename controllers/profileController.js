@@ -8,7 +8,6 @@ const profileController = {
       const profiles = await Profile.find({ _id: { $ne: profileId } });
       return res.json(profiles);
     } catch (error) {
-      console.log("error", error);
       res.status(500).send("Unable to find profiles");
     }
   },
@@ -96,7 +95,6 @@ const profileController = {
         .limit(limit);
       res.json(profiles);
     } catch (error) {
-      console.log("error", error);
       res.status(500).send("Unable to find profiles");
     }
   },

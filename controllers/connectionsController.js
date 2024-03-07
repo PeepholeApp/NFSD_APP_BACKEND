@@ -13,7 +13,6 @@ const Connections = {
 
     const recipientProfile = await Profile.findOne({ _id: profileId });
     const recipientUser = await User.findOne({ _id: recipientProfile.user });
-    console.log("sender email to", recipientUser, senderUser, recipientProfile);
 
     const newConnection = await ConnectionRequest.create({
       sender: senderUser._id,
@@ -86,8 +85,6 @@ const Connections = {
         status: req.body.status,
       }
     );
-
-    console.log("connection", connection);
 
     if (connection) {
       res.status(201).json({ ...connection, status: req.body.status });

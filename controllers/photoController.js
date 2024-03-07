@@ -2,7 +2,6 @@ const cloudinary = require("../utils/cloudinary");
 
 const photoController = {
   addPhoto: async (req, res) => {
-    console.log("jhjhjhjh", req.files);
     try {
       let urls = [];
 
@@ -16,7 +15,6 @@ const photoController = {
       }
       res.json(urls);
     } catch (error) {
-      console.log("error", error);
       if (!req.file) {
         return res.json({ error: "file not found", error });
       }
