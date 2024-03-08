@@ -55,7 +55,6 @@ const userController = {
       res.status(400).send("Failed to create user");
     }
   },
-
   deleteUser: async (req, res) => {
     try {
       const user = await User.findOneAndDelete(req.params.id);
