@@ -1,61 +1,124 @@
 const { verifyToken } = require("./userController");
 const crypto = require("crypto");
-const nodemailerTransporter = require("../utils/nodemailer");
+const { transporter } = require("../utils/nodemailer");
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const resetPasswordController = {
-  sendResetEmail: async (req, res) => {
+  sendLink: async (req, res) => {
+    const { email } = req.body;
+
+    // enviamos el token por email
+
     try {
-      const { email } = req.body;
+      // buscamos el usuario por el email
+      const user = await User.findOne({ email });
 
-      const tokenValid = await verifyToken(req, res, () => {});
-
-      if (!tokenValid) {
+      if (!user) {
         return res
-          .status(401)
-          .json({ error: "Token not valid. Cannot initiate password reset." });
+          .status(404)
+          .json({ error: "Email not found. Cannot initiate password reset." });
       }
 
-      const resetToken = await generateResetToken();
+      // si existe creamos un token jwt y lo firmamos con el secret
+      // le ponemos una expiracion de 1 hora
+      const token = jwt.sign({ email }, process.env.SECRET, {
+        expiresIn: 3600, // una hora
+      });
 
-      const mailOptions = {
+      const link = `http://localhost:5173/reset-password/${token}`;
+
+      const message = `
+          <div style="width: 100%; background-color: #f3f9ff; padding: 5rem 0">
+              <div style="max-width: 700px; background-color: white; margin: 0 auto">
+                  <div style="width: 100%; background-color: #654ea3; padding: 20px 0">
+                      <img
+                          src="https://res.cloudinary.com/depi6sft8/image/upload/v1707348591/svj5m1zy8daiftfqarof.png"
+                          style="width: 100%; height: 70px; object-fit: contain"
+                      />
+                  </div>
+              <div style="width: 100%; gap: 10px; padding: 30px 0; display: grid">
+                  <p style="font-weight: 800; font-size: 1.2rem; padding: 0 30px">
+                      Peephole
+                    </p>,
+                  <div style="font-size: .8rem; margin: 0 30px">
+                      <p>Hi!</p>
+                      <p>You have requested a password reset.</p>
+                      <p>Please click the following link to reset your password:</p>
+                      <p><a href="${link}">${link}</a></p>
+                      <p>If you did not request this, please ignore this email.</p>
+                  </div>
+                </div>
+            </div>
+          </div>
+        `;
+
+      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Restablecimiento de Contraseña",
-        html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña: <a href="http://localhost:3001/reset-password/${resetToken}">Restablecer Contraseña</a></p>`,
-      };
+        subject: "Peephole password reset",
+        html: message,
+      });
 
-      await nodemailerTransporter.transporter.sendMail(mailOptions);
-
-      return res
-        .status(200)
-        .json({
-          message: "Correo electrónico de restablecimiento enviado con éxito.",
-        });
+      return res.status(200).json({
+        message: "Password reset email sent. Check your inbox!",
+      });
     } catch (error) {
-      console.error(
-        "Error enviando el correo electrónico de restablecimiento:",
-        error
-      );
       return res
         .status(500)
-        .json({
-          error: "Error interno del servidor al enviar el correo electrónico.",
-        });
+        .json({ error: "Internal server error", message: error.message });
     }
   },
-};
+  verifyToken: async (req, res) => {
+    // obtener el token del request
+    const { token } = req.body;
 
-const generateResetToken = () => {
-  return new Promise((resolve, reject) => {
-    crypto.randomBytes(32, (err, buffer) => {
+    if (token) {
+      // verificar el token con jwt
+      jwt.verify(token, process.env.SECRET, function (err, decoded) {
+        if (err) {
+          return res.status(401).json({ error: "Token is invalid" });
+        }
+
+        return res.status(200).send();
+      });
+    } else {
+      return res.status(400).json({ error: "Missing token" });
+    }
+  },
+  resetPassword: async (req, res) => {
+    const { token, password } = req.body;
+
+    // verificamos que tenemos los campos necesarios en el request
+    if (!token || !password) {
+      return res.status(400).json({ error: "Missing token or password" });
+    }
+
+    // verificamos que el token enviado es valido
+    jwt.verify(token, process.env.SECRET, async function (err, decoded) {
+      // si no es valido devolvemos un error
       if (err) {
-        reject(err);
-      } else {
-        const token = buffer.toString("hex");
-        resolve(token);
+        return res.status(401).json({ error: "Token is invalid" });
       }
-    });
-  });
-};
 
+      const updatedPassword = await bcrypt.hash(password, 10);
+
+      // Actualizamos usuario con nuevo password
+      const user = await User.findOneAndUpdate(
+        { email: decoded.email },
+        {
+          password: updatedPassword,
+        }
+      );
+
+      // usuario no existe
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.status(200).send();
+    });
+  },
+};
 module.exports = resetPasswordController;
