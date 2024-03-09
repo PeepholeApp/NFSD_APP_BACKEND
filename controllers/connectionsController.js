@@ -23,7 +23,7 @@ const Connections = {
     const recipientUser = await User.findOne({ _id: recipientProfile.user });
     // console.log("push.token", recipientUser.pushToken);
 
-    const subject = `Hi! ${senderProfile.name} wants to contact you`;
+    const subject = "New connection request";
 
     const message = {
       notification: {
@@ -52,11 +52,32 @@ const Connections = {
       receiver: recipientUser._id,
     });
 
+    // `Hi! ${senderProfile.name} wants to contact you`//
+
     await transporter.sendMail({
       from: sender.email,
       to: recipientUser.email,
       subject,
-      html: "Hello",
+      html: `
+      <div style="width: 100%; background-color: #f3f9ff; padding: 5rem 0">
+        <div style="max-width: 700px; background-color: white; margin: 0 auto">
+              <div style="width: 100%; background-color: #654ea3; padding: 20px 0">
+                  <img
+                      src="https://res.cloudinary.com/depi6sft8/image/upload/v1707348591/svj5m1zy8daiftfqarof.png"
+                      style="width: 100%; height: 70px; object-fit: contain"
+                  />
+              </div>
+          <div style="width: 100%; gap: 10px; padding: 30px 0; display: grid">
+              <p style="font-weight: 800; font-size: 1.2rem; padding: 0 30px">
+                  Peephole
+                </p>,
+              <div style="font-size: .8rem; margin: 0 30px">
+                  <p>Hi! ${senderProfile.name} with  Email: ${sender.email} wants to contact you</p>
+              </div>
+            </div>
+        </div>
+      </div>
+    `,
     });
 
     res.status(200).send();
