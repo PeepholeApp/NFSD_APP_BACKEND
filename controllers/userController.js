@@ -82,6 +82,7 @@ const userController = {
     const { email, password } = req.body;
 
     const [userFound] = await User.find({ email: email });
+    console.log(userFound.role);
     if (!userFound) return res.status(401).json({ msg: "User not found" });
 
     if (await bcrypt.compare(password, userFound.password)) {
@@ -96,6 +97,7 @@ const userController = {
         token,
         userId: userFound._id,
         profileId: profile?._id,
+        role: userFound.role,
       });
     }
     return res.status(404).json({ msg: "Password does not match" });
