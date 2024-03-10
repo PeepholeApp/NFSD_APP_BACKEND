@@ -32,12 +32,6 @@ app.use("/activities", activityRouter);
 app.use("/image", photoRouter);
 app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
-app.use("/users", userRouter);
-app.use("/profiles", profileRouter);
-app.use("/activities", activityRouter);
-app.use("/image", photoRouter);
-app.use("/chat", chatRouter);
-app.use("/connections", connectionsRouter);
 app.use("/reset-password", resetPasswordRouter);
 app.use("/contact", contactRouter);
 
