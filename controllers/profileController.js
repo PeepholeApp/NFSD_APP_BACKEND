@@ -3,6 +3,16 @@ const User = require("../models/User");
 const userController = require("./userController");
 
 const profileController = {
+  getProfiles: async (req, res) => {
+    console.log("Aca");
+    try {
+      const profiles = await Profile.find();
+      return res.json(profiles);
+    } catch (error) {
+      res.status(500).send("Unable to find profiles");
+    }
+  },
+
   getAllProfiles: async (req, res) => {
     const profileId = req.query.profileId;
     try {
@@ -49,10 +59,12 @@ const profileController = {
   },
 
   deleteProfile: async (req, res) => {
+    console.log("profile: ", req.params.id);
     try {
       const profile = await Profile.findOneAndDelete({ userId: req.params.id });
       res.json(profile);
     } catch (error) {
+      console.log(error);
       res.status(404).send("Profile cannot be deleted");
     }
   },
