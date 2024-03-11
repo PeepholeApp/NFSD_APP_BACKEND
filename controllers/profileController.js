@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const User = require("../models/User");
 const userController = require("./userController");
 
 const profileController = {
@@ -33,16 +34,15 @@ const profileController = {
     }
   },
 
-  getProfileByName: async (req, res) => {
+  getProfileByEmail: async (req, res) => {
     try {
-      const userName = req.params.name;
-      const profile = await Profile.find({ name: userName }).populate(
-        "user",
-        "email"
-      );
-      return res.json(profile);
+      const userEmail = req.params.email;
+      const userId = await User.findOne({ email: userEmail });
+      const profile = await Profile.findOne({ user: userId._id });
+      const fullProfile = { user: userId, profile };
+      return res.json(fullProfile);
     } catch (error) {
-      res.status(404).send("Profile not found");
+      res.status(404).send("Email not found");
     }
   },
 
