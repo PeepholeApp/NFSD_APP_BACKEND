@@ -21,7 +21,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 const user = process.env.MONGODB_USER;
 const password = process.env.MONGODB_PASSWORD;
@@ -38,26 +38,16 @@ app.use("/users", userRouter);
 app.use("/profiles", profileRouter);
 app.use("/activities", activityRouter);
 app.use("/image", photoRouter);
-app.use("/password-recovery", recoverPasswordRouter);
-app.use("/contact", contactRouter);
+app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
-app.use("/chats", chatRouter);
-app.use("/messages", messagesRouter);
+app.use("/users", userRouter);
+app.use("/profiles", profileRouter);
+app.use("/activities", activityRouter);
+app.use("/image", photoRouter);
+app.use("/chat", chatRouter);
+app.use("/connections", connectionsRouter);
+app.use("/reset-password", resetPasswordRouter);
 
-io.on("connection", (socket) => {
-  console.log("User connected");
-
-  socket.on("chat-message", (message) => {
-
-    io.emit("chat-message", message);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
-});
-
-
-server.listen(process.env.PORT || `0.0.0.0:${port}`, () => {
+app.listen(process.env.PORT || `0.0.0.0:$PORT`, () => {
   console.log("Running server");
 });
