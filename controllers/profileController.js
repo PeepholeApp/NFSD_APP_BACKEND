@@ -2,6 +2,17 @@ const Profile = require("../models/Profile");
 const userController = require("./userController");
 
 const profileController = {
+  addProfile: async (req, res) => {
+    try {
+      const newProfile = await Profile.create({
+        ...req.body,
+      });
+      res.status(200).json(newProfile);
+    } catch (error) {
+      console.error(error);
+      res.status(400).send("Profile cannot be added", error);
+    }
+  },
   getAllProfiles: async (req, res) => {
     const profileId = req.query.profileId;
     try {
@@ -32,19 +43,6 @@ const profileController = {
       return res.json(profile);
     } catch (error) {
       res.status(404).send("Profile not found");
-    }
-  },
-
-  addProfile: async (req, res) => {
-    try {
-      const newProfile = await Profile.create({
-        ...req.body,
-      });
-
-      res.status(200).json(newProfile);
-    } catch (error) {
-      console.error(error);
-      res.status(400).send("Profile cannot be added", error);
     }
   },
 

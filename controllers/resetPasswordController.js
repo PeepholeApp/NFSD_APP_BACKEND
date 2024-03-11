@@ -8,11 +8,7 @@ const bcrypt = require("bcryptjs");
 const resetPasswordController = {
   sendLink: async (req, res) => {
     const { email } = req.body;
-
-    // enviamos el token por email
-
     try {
-      // buscamos el usuario por el email
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -21,10 +17,8 @@ const resetPasswordController = {
           .json({ error: "Email not found. Cannot initiate password reset." });
       }
 
-      // si existe creamos un token jwt y lo firmamos con el secret
-      // le ponemos una expiracion de 1 hora
       const token = jwt.sign({ email }, process.env.SECRET, {
-        expiresIn: 3600, // una hora
+        expiresIn: 3600,
       });
 
       const link = `http://localhost:5173/reset-password/${token}`;
@@ -90,21 +84,16 @@ const resetPasswordController = {
   resetPassword: async (req, res) => {
     const { token, password } = req.body;
 
-    // verificamos que tenemos los campos necesarios en el request
     if (!token || !password) {
       return res.status(400).json({ error: "Missing token or password" });
     }
-
-    // verificamos que el token enviado es valido
     jwt.verify(token, process.env.SECRET, async function (err, decoded) {
-      // si no es valido devolvemos un error
       if (err) {
         return res.status(401).json({ error: "Token is invalid" });
       }
 
       const updatedPassword = await bcrypt.hash(password, 10);
 
-      // Actualizamos usuario con nuevo password
       const user = await User.findOneAndUpdate(
         { email: decoded.email },
         {
@@ -112,7 +101,6 @@ const resetPasswordController = {
         }
       );
 
-      // usuario no existe
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
