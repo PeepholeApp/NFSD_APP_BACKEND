@@ -10,7 +10,7 @@ router.get("/:id", userController.getUserById);
 router.get("/search/:email", userController.getUserByEmail);
 router.post("/", userController.addUser);
 router.post("/login", userController.checkUser);
-router.delete("/:id", verifyToken, userController.deleteUser);
-router.patch("/:id", verifyToken, userController.updateUser);
+router.delete("/:id", userController.deleteUser);
+router.patch("/:id", userController.updateUser);
 
 module.exports = router;

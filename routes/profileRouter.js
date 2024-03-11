@@ -3,6 +3,7 @@ const router = express.Router();
 const { verifyToken } = require("../controllers/userController");
 const profileController = require("../controllers/profileController");
 
+router.get("/get", profileController.getProfiles);
 router.post("/", profileController.addProfile);
 router.get("/", profileController.getPaginationProfiles);
 router.get("/all", profileController.getAllProfiles);

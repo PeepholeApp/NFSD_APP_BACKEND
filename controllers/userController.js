@@ -56,15 +56,18 @@ const userController = {
     }
   },
   deleteUser: async (req, res) => {
+    console.log("user: ", req.params.id);
     try {
       const user = await User.findOneAndDelete(req.params.id);
       res.json(user);
     } catch (error) {
+      console.log(error);
       res.status(404).send("User cannot be deleted");
     }
   },
 
   updateUser: async (req, res) => {
+    console.log("pasa por aca: ", req.body, "Id: ", req.params.id);
     try {
       const user = await User.findOneAndUpdate(
         {
@@ -74,6 +77,7 @@ const userController = {
       );
       res.json(user);
     } catch (error) {
+      console.log(error);
       res.status(404).send("User cannot be update");
     }
   },
@@ -82,7 +86,7 @@ const userController = {
     const { email, password } = req.body;
 
     const [userFound] = await User.find({ email: email });
-    console.log(userFound.role);
+
     if (!userFound) return res.status(401).json({ msg: "User not found" });
 
     if (await bcrypt.compare(password, userFound.password)) {
