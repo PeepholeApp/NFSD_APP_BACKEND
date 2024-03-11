@@ -39,6 +39,7 @@ const findUserChats = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 const findChat = async (req, res) => {
   const { firstId, secondId } = req.params;
 
@@ -53,3 +54,6 @@ const findChat = async (req, res) => {
 };
 
 module.exports = { createChat, findUserChats, findChat };
+=======
+module.exports = {createChat, findUserChats};
+>>>>>>> chat
