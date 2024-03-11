@@ -21,7 +21,6 @@ const Connections = {
 
     const recipientProfile = await Profile.findOne({ _id: profileId });
     const recipientUser = await User.findOne({ _id: recipientProfile.user });
-    // console.log("push.token", recipientUser.pushToken);
 
     const subject = "New connection request";
 
@@ -37,6 +36,7 @@ const Connections = {
       },
       token: recipientUser.pushToken,
     };
+
     getMessaging()
       .send(message)
       .then((response) => {
@@ -51,8 +51,6 @@ const Connections = {
       sender: senderUser._id,
       receiver: recipientUser._id,
     });
-
-    // `Hi! ${senderProfile.name} wants to contact you`//
 
     await transporter.sendMail({
       from: sender.email,
@@ -87,7 +85,6 @@ const Connections = {
     const profileId = req.params.profileId;
     const sender = req.user; //usuario que esta logueado
     const senderUser = await User.findOne({ email: sender.email });
-    const senderProfile = await Profile.findOne({ user: senderUser._id });
 
     const recipientProfile = await Profile.findOne({ _id: profileId });
     const recipientUser = await User.findOne({ _id: recipientProfile.user });

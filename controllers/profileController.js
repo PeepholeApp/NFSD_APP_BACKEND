@@ -3,6 +3,7 @@ const User = require("../models/User");
 const userController = require("./userController");
 
 const profileController = {
+
   getProfiles: async (req, res) => {
     console.log("Aca");
     try {
@@ -10,6 +11,19 @@ const profileController = {
       return res.json(profiles);
     } catch (error) {
       res.status(500).send("Unable to find profiles");
+    }
+  },
+
+
+  addProfile: async (req, res) => {
+    try {
+      const newProfile = await Profile.create({
+        ...req.body,
+      });
+      res.status(200).json(newProfile);
+    } catch (error) {
+      console.error(error);
+      res.status(400).send("Profile cannot be added", error);
     }
   },
 
@@ -33,6 +47,19 @@ const profileController = {
     }
   },
 
+  getProfileByName: async (req, res) => {
+    try {
+      const userName = req.params.name;
+      const profile = await Profile.find({ name: userName }).populate(
+        "user",
+        "email"
+      );
+      return res.json(profile);
+    } catch (error) {
+      res.status(404).send("Profile not found");
+    }
+  },
+
   getProfileByEmail: async (req, res) => {
     try {
       const userEmail = req.params.email;
@@ -42,19 +69,6 @@ const profileController = {
       return res.json(fullProfile);
     } catch (error) {
       res.status(404).send("Email not found");
-    }
-  },
-
-  addProfile: async (req, res) => {
-    try {
-      const newProfile = await Profile.create({
-        ...req.body,
-      });
-
-      res.status(200).json(newProfile);
-    } catch (error) {
-      console.error(error);
-      res.status(400).send("Profile cannot be added", error);
     }
   },
 
