@@ -38,15 +38,11 @@ app.use("/users", userRouter);
 app.use("/profiles", profileRouter);
 app.use("/activities", activityRouter);
 app.use("/image", photoRouter);
+app.use("/password-recovery", recoverPasswordRouter);
+app.use("/contact", contactRouter);
 app.use("/chat", chatRouter);
 app.use("/connections", connectionsRouter);
-app.use("/users", userRouter);
-app.use("/profiles", profileRouter);
-app.use("/activities", activityRouter);
-app.use("/image", photoRouter);
-app.use("/chat", chatRouter);
-app.use("/connections", connectionsRouter);
-app.use("/reset-password", resetPasswordRouter);
+app.use("/messages", messagesRouter);
 
 app.listen(process.env.PORT || `0.0.0.0:$PORT`, () => {
   console.log("Running server");
