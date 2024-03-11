@@ -34,6 +34,19 @@ const profileController = {
     }
   },
 
+  getProfileByName: async (req, res) => {
+    try {
+      const userName = req.params.name;
+      const profile = await Profile.find({ name: userName }).populate(
+        "user",
+        "email"
+      );
+      return res.json(profile);
+    } catch (error) {
+      res.status(404).send("Profile not found");
+    }
+  },
+
   getProfileByEmail: async (req, res) => {
     try {
       const userEmail = req.params.email;
